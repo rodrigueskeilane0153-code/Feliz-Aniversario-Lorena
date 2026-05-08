@@ -1,0 +1,430 @@
+[index.html](https://github.com/user-attachments/files/27528690/index.html)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feliz Aniversário, Lorena! 🌌</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      overflow: hidden;
+      font-family: 'Georgia', serif;
+      cursor: default;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    /* Tela de abertura */
+    #intro {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, #0d0221 0%, #000000 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: opacity 1.5s ease;
+    }
+
+    #intro h1 {
+      color: #fff;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      text-align: center;
+      padding: 0 1.5rem;
+      line-height: 1.5;
+      text-shadow: 0 0 20px #a78bfa, 0 0 40px #7c3aed;
+      animation: fadeInDown 2s ease forwards;
+    }
+
+    #intro p {
+      margin-top: 1.5rem;
+      color: #c4b5fd;
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      text-align: center;
+      padding: 0 1.5rem;
+      animation: fadeInDown 2.5s ease forwards;
+    }
+
+    #btn-entrar {
+      margin-top: 2.5rem;
+      padding: 0.8rem 2.2rem;
+      background: transparent;
+      border: 2px solid #a78bfa;
+      color: #a78bfa;
+      font-size: 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      animation: fadeInDown 3s ease forwards;
+    }
+
+    #btn-entrar:hover {
+      background: #a78bfa;
+      color: #000;
+      box-shadow: 0 0 20px #a78bfa;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Tooltip da estrela */
+    #tooltip {
+      position: fixed;
+      background: rgba(15, 5, 40, 0.92);
+      border: 1px solid #7c3aed;
+      color: #e9d5ff;
+      padding: 0.7rem 1.2rem;
+      border-radius: 12px;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      max-width: 220px;
+      text-align: center;
+      box-shadow: 0 0 20px #7c3aed88;
+      z-index: 20;
+    }
+
+    #tooltip.visible {
+      opacity: 1;
+    }
+
+    /* Mensagem central ao clicar */
+    #mensagem-central {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    #mensagem-central .card {
+      background: rgba(15, 5, 40, 0.95);
+      border: 1px solid #7c3aed;
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      max-width: 360px;
+      width: 90%;
+      text-align: center;
+      color: #e9d5ff;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      box-shadow: 0 0 40px #7c3aed99;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.4s ease;
+      pointer-events: all;
+    }
+
+    #mensagem-central .card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #mensagem-central .card span {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    #mensagem-central .card button {
+      margin-top: 1.2rem;
+      background: transparent;
+      border: 1px solid #a78bfa;
+      color: #a78bfa;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    #mensagem-central .card button:hover {
+      background: #a78bfa;
+      color: #000;
+    }
+
+    /* Instrução */
+    #instrucao {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #6d28d9aa;
+      font-size: clamp(0.75rem, 2vw, 0.9rem);
+      text-align: center;
+      pointer-events: none;
+      animation: pulsar 2.5s ease-in-out infinite;
+      z-index: 5;
+    }
+
+    @keyframes pulsar {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tela de abertura -->
+  <div id="intro">
+    <h1>✨ Feliz Aniversário, Lorena! ✨</h1>
+    <p>Para Lorena, que ilumina a vida das pessoas<br>com suas aventuras e loucuras!</p>
+    <button id="btn-entrar">Explorar o céu 🌌</button>
+  </div>
+
+  <!-- Canvas das estrelas -->
+  <canvas id="galaxy"></canvas>
+
+  <!-- Tooltip hover -->
+  <div id="tooltip"></div>
+
+  <!-- Card ao clicar -->
+  <div id="mensagem-central">
+    <div class="card" id="card">
+      <span id="card-emoji">⭐</span>
+      <p id="card-texto"></p>
+      <button onclick="fecharCard()">Fechar ✕</button>
+    </div>
+  </div>
+
+  <!-- Instrução -->
+  <div id="instrucao">✨ Passe o mouse (ou toque) nas estrelas para descobrir segredos ✨</div>
+
+  <script>
+    // ─── DADOS ───────────────────────────────────────────────
+    const motivos = [
+      { texto: "Você é uma garota esforçada",          emoji: "💪" },
+      { texto: "Amo sua energia",                       emoji: "⚡" },
+      { texto: "Floripa com vc foi muito mais legal",   emoji: "🏖️" },
+      { texto: "Aventureira",                           emoji: "🧭" },
+      { texto: "Parceira e amiga para a vida inteira",  emoji: "👯‍♀️" },
+      { texto: "Amorosa",                               emoji: "💜" },
+    ];
+
+    // ─── CANVAS SETUP ────────────────────────────────────────
+    const canvas  = document.getElementById('galaxy');
+    const ctx     = canvas.getContext('2d');
+    const tooltip = document.getElementById('tooltip');
+    const card    = document.getElementById('card');
+    const cardTexto = document.getElementById('card-texto');
+    const cardEmoji = document.getElementById('card-emoji');
+
+    let W, H, stars = [], specialStars = [], nebulas = [];
+    let mouseX = -999, mouseY = -999;
+    let cardAberto = false;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      init();
+    }
+
+    // ─── INICIALIZA ESTRELAS ──────────────────────────────────
+    function init() {
+      stars        = [];
+      specialStars = [];
+      nebulas      = [];
+
+      // Nebulosas de fundo
+      for (let i = 0; i < 5; i++) {
+        nebulas.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: 80 + Math.random() * 180,
+          cor: `hsla(\${260 + Math.random()*60}, 80%, 40%, 0.07)`
+        });
+      }
+
+      // Estrelas comuns
+      for (let i = 0; i < 280; i++) {
+        stars.push({
+          x:       Math.random() * W,
+          y:       Math.random() * H,
+          r:       0.3 + Math.random() * 1.6,
+          alpha:   0.4 + Math.random() * 0.6,
+          speed:   0.003 + Math.random() * 0.008,
+          phase:   Math.random() * Math.PI * 2,
+          cor:     `hsl(\${240 + Math.random()*80}, 80%, \${70 + Math.random()*30}%)`,
+        });
+      }
+
+      // Estrelas especiais (motivos)
+      const margin = 80;
+      for (let i = 0; i < motivos.length; i++) {
+        specialStars.push({
+          x:       margin + Math.random() * (W - margin * 2),
+          y:       margin + Math.random() * (H - margin * 2),
+          r:       5 + Math.random() * 4,
+          alpha:   1,
+          phase:   Math.random() * Math.PI * 2,
+          speed:   0.02 + Math.random() * 0.01,
+          motivo:  motivos[i],
+          hovered: false,
+          pulso:   0,
+        });
+      }
+    }
+
+    // ─── DRAW ─────────────────────────────────────────────────
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+
+      // Fundo gradiente galáxia
+      const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*0.8);
+      bg.addColorStop(0,   '#0d0221');
+      bg.addColorStop(0.5, '#0a0118');
+      bg.addColorStop(1,   '#000000');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Nebulosas
+      nebulas.forEach(n => {
+        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+        g.addColorStop(0, n.cor);
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+        ctx.fill();
+      });
+
+      // Estrelas comuns
+      stars.forEach(s => {
+        const a = s.alpha * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = s.cor.replace(')', `, \${a})`).replace('hsl', 'hsla');
+        ctx.fill();
+      });
+
+      // Estrelas especiais
+      let hoveredStar = null;
+      specialStars.forEach(s => {
+        const dist = Math.hypot(mouseX - s.x, mouseY - s.y);
+        s.hovered = dist < 28;
+        if (s.hovered) hoveredStar = s;
+
+        s.pulso = 0.7 + 0.3 * Math.sin(t * s.speed + s.phase);
+        const raio = s.hovered ? s.r * 1.6 : s.r * s.pulso;
+
+        // Brilho externo
+        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, raio * 3.5);
+        glow.addColorStop(0,   s.hovered ? 'rgba(196,165,255,0.5)' : 'rgba(167,139,250,0.3)');
+        glow.addColorStop(1,   'transparent');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, raio * 3.5, 0, Math.PI*2);
+        ctx.fill();
+
+        // Núcleo
+        const core = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, raio);
+        core.addColorStop(0, '#ffffff');
+        core.addColorStop(0.4, s.hovered ? '#c4b5fd' : '#a78bfa');
+        core.addColorStop(1, 'transparent');
+        ctx.fillStyle = core;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, raio, 0, Math.PI*2);
+        ctx.fill();
+
+        // Raios de luz (estrela de 4 pontas)
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.strokeStyle = s.hovered ? 'rgba(196,165,255,0.7)' : 'rgba(167,139,250,0.4)';
+        ctx.lineWidth = s.hovered ? 1.5 : 0.8;
+        const len = raio * (s.hovered ? 3.5 : 2.5);
+        for (let a = 0; a < 4; a++) {
+          ctx.beginPath();
+          ctx.rotate(Math.PI / 4);
+          ctx.moveTo(0, -len);
+          ctx.lineTo(0, len);
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+
+      // Tooltip hover
+      if (hoveredStar && !cardAberto) {
+        tooltip.textContent = `\${hoveredStar.motivo.emoji}  \${hoveredStar.motivo.texto}`;
+        tooltip.classList.add('visible');
+
+        let tx = mouseX + 20, ty = mouseY - 20;
+        if (tx + 230 > W) tx = mouseX - 240;
+        if (ty < 10)       ty = mouseY + 20;
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top  = ty + 'px';
+      } else {
+        tooltip.classList.remove('visible');
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    // ─── CARD AO CLICAR ───────────────────────────────────────
+    function abrirCard(s) {
+      cardTexto.textContent = s.motivo.texto;
+      cardEmoji.textContent = s.motivo.emoji;
+      card.classList.add('visible');
+      cardAberto = true;
+    }
+
+    function fecharCard() {
+      card.classList.remove('visible');
+      cardAberto = false;
+    }
+
+    // ─── EVENTOS ──────────────────────────────────────────────
+    canvas.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    canvas.addEventListener('click', e => {
+      if (cardAberto) return;
+      const s = specialStars.find(s => Math.hypot(e.clientX - s.x, e.clientY - s.y) < 28);
+      if (s) abrirCard(s);
+    });
+
+    // Suporte touch (mobile)
+    canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      mouseX = e.touches[0].clientX;
+      mouseY = e.touches[0].clientY;
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', e => {
+      if (cardAberto) return;
+      const tx = e.changedTouches[0].clientX;
+      const ty = e.changedTouches[0].clientY;
+      const s = specialStars.find(s => Math.hypot(tx - s.x, ty - s.y) < 36);
+      if (s) abrirCard(s);
+    });
+
+    // ─── INTRO ────────────────────────────────────────────────
+    document.getElementById('btn-entrar').addEventListener('click', () => {
+      const intro = document.getElementById('intro');
+      intro.style.opacity = '0';
+      setTimeout(() => intro.style.display = 'none', 1500);
+    });
+
+    // ─── START ────────────────────────────────────────────────
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>
