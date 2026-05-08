@@ -1,4 +1,3 @@
-[index.html](https://github.com/user-attachments/files/27528690/index.html)
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,24 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Feliz Aniversário, Lorena! 🌌</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       background: #000;
       overflow: hidden;
       font-family: 'Georgia', serif;
-      cursor: default;
     }
 
     canvas {
-      display: block;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
     }
 
-    /* Tela de abertura */
     #intro {
       position: fixed;
       inset: 0;
@@ -32,153 +27,156 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 10;
-      transition: opacity 1.5s ease;
+      z-index: 100;
     }
 
     #intro h1 {
       color: #fff;
-      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
       text-align: center;
       padding: 0 1.5rem;
-      line-height: 1.5;
+      line-height: 1.6;
       text-shadow: 0 0 20px #a78bfa, 0 0 40px #7c3aed;
-      animation: fadeInDown 2s ease forwards;
     }
 
     #intro p {
-      margin-top: 1.5rem;
+      margin-top: 1.2rem;
       color: #c4b5fd;
-      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
       text-align: center;
-      padding: 0 1.5rem;
-      animation: fadeInDown 2.5s ease forwards;
+      padding: 0 2rem;
+      line-height: 1.6;
     }
 
     #btn-entrar {
       margin-top: 2.5rem;
-      padding: 0.8rem 2.2rem;
+      padding: 0.9rem 2.5rem;
       background: transparent;
       border: 2px solid #a78bfa;
       color: #a78bfa;
-      font-size: 1rem;
+      font-size: 1.1rem;
       border-radius: 50px;
       cursor: pointer;
       letter-spacing: 1px;
       transition: all 0.3s ease;
-      animation: fadeInDown 3s ease forwards;
     }
 
     #btn-entrar:hover {
       background: #a78bfa;
       color: #000;
-      box-shadow: 0 0 20px #a78bfa;
+      box-shadow: 0 0 25px #a78bfa;
     }
 
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Tooltip da estrela */
     #tooltip {
       position: fixed;
-      background: rgba(15, 5, 40, 0.92);
+      background: rgba(15, 5, 40, 0.95);
       border: 1px solid #7c3aed;
       color: #e9d5ff;
-      padding: 0.7rem 1.2rem;
+      padding: 0.8rem 1.3rem;
       border-radius: 12px;
-      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-size: 1rem;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
-      max-width: 220px;
+      max-width: 240px;
       text-align: center;
       box-shadow: 0 0 20px #7c3aed88;
-      z-index: 20;
+      z-index: 50;
+      display: none;
     }
 
     #tooltip.visible {
       opacity: 1;
+      display: block;
     }
 
-    /* Mensagem central ao clicar */
-    #mensagem-central {
+    #card-overlay {
       position: fixed;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 15;
+      z-index: 200;
+      background: rgba(0,0,0,0.4);
+      opacity: 0;
       pointer-events: none;
+      transition: opacity 0.4s ease;
     }
 
-    #mensagem-central .card {
-      background: rgba(15, 5, 40, 0.95);
-      border: 1px solid #7c3aed;
-      border-radius: 20px;
-      padding: 2rem 2.5rem;
-      max-width: 360px;
-      width: 90%;
-      text-align: center;
-      color: #e9d5ff;
-      font-size: clamp(1rem, 2.5vw, 1.2rem);
-      box-shadow: 0 0 40px #7c3aed99;
-      opacity: 0;
-      transform: scale(0.8);
-      transition: all 0.4s ease;
+    #card-overlay.visible {
+      opacity: 1;
       pointer-events: all;
     }
 
-    #mensagem-central .card.visible {
-      opacity: 1;
+    #card {
+      background: rgba(15, 5, 40, 0.97);
+      border: 1px solid #7c3aed;
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 340px;
+      width: 90%;
+      text-align: center;
+      color: #e9d5ff;
+      box-shadow: 0 0 50px #7c3aed99;
+      transform: scale(0.8);
+      transition: transform 0.4s ease;
+    }
+
+    #card-overlay.visible #card {
       transform: scale(1);
     }
 
-    #mensagem-central .card span {
-      font-size: 2.5rem;
+    #card-emoji {
+      font-size: 3rem;
       display: block;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
     }
 
-    #mensagem-central .card button {
-      margin-top: 1.2rem;
+    #card-texto {
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    #card button {
+      margin-top: 1.5rem;
       background: transparent;
       border: 1px solid #a78bfa;
       color: #a78bfa;
-      padding: 0.4rem 1.2rem;
+      padding: 0.5rem 1.5rem;
       border-radius: 50px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       transition: all 0.3s;
     }
 
-    #mensagem-central .card button:hover {
+    #card button:hover {
       background: #a78bfa;
       color: #000;
     }
 
-    /* Instrução */
     #instrucao {
       position: fixed;
       bottom: 1.5rem;
       left: 50%;
       transform: translateX(-50%);
-      color: #6d28d9aa;
-      font-size: clamp(0.75rem, 2vw, 0.9rem);
+      color: #a78bfaaa;
+      font-size: 0.9rem;
       text-align: center;
       pointer-events: none;
+      z-index: 10;
+      white-space: nowrap;
       animation: pulsar 2.5s ease-in-out infinite;
-      z-index: 5;
     }
 
     @keyframes pulsar {
-      0%, 100% { opacity: 0.4; }
-      50%       { opacity: 1; }
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
     }
   </style>
 </head>
 <body>
+
+  <canvas id="galaxy"></canvas>
 
   <!-- Tela de abertura -->
   <div id="intro">
@@ -187,15 +185,12 @@
     <button id="btn-entrar">Explorar o céu 🌌</button>
   </div>
 
-  <!-- Canvas das estrelas -->
-  <canvas id="galaxy"></canvas>
-
-  <!-- Tooltip hover -->
+  <!-- Tooltip -->
   <div id="tooltip"></div>
 
-  <!-- Card ao clicar -->
-  <div id="mensagem-central">
-    <div class="card" id="card">
+  <!-- Card -->
+  <div id="card-overlay">
+    <div id="card">
       <span id="card-emoji">⭐</span>
       <p id="card-texto"></p>
       <button onclick="fecharCard()">Fechar ✕</button>
@@ -203,228 +198,214 @@
   </div>
 
   <!-- Instrução -->
-  <div id="instrucao">✨ Passe o mouse (ou toque) nas estrelas para descobrir segredos ✨</div>
+  <div id="instrucao">✨ Clique nas estrelas roxas para descobrir segredos ✨</div>
 
-  <script>
-    // ─── DADOS ───────────────────────────────────────────────
-    const motivos = [
-      { texto: "Você é uma garota esforçada",          emoji: "💪" },
-      { texto: "Amo sua energia",                       emoji: "⚡" },
-      { texto: "Floripa com vc foi muito mais legal",   emoji: "🏖️" },
-      { texto: "Aventureira",                           emoji: "🧭" },
-      { texto: "Parceira e amiga para a vida inteira",  emoji: "👯‍♀️" },
-      { texto: "Amorosa",                               emoji: "💜" },
-    ];
+<script>
+  const motivos = [
+    { texto: "Você é uma garota esforçada",         emoji: "💪" },
+    { texto: "Amo sua energia",                      emoji: "⚡" },
+    { texto: "Floripa com vc foi muito mais legal",  emoji: "🏖️" },
+    { texto: "Aventureira",                          emoji: "🧭" },
+    { texto: "Parceira e amiga para a vida inteira", emoji: "👯‍♀️" },
+    { texto: "Amorosa",                              emoji: "💜" },
+  ];
 
-    // ─── CANVAS SETUP ────────────────────────────────────────
-    const canvas  = document.getElementById('galaxy');
-    const ctx     = canvas.getContext('2d');
-    const tooltip = document.getElementById('tooltip');
-    const card    = document.getElementById('card');
-    const cardTexto = document.getElementById('card-texto');
-    const cardEmoji = document.getElementById('card-emoji');
+  const canvas  = document.getElementById('galaxy');
+  const ctx     = canvas.getContext('2d');
+  const tooltip = document.getElementById('tooltip');
+  const overlay = document.getElementById('card-overlay');
+  const cardTexto = document.getElementById('card-texto');
+  const cardEmoji = document.getElementById('card-emoji');
 
-    let W, H, stars = [], specialStars = [], nebulas = [];
-    let mouseX = -999, mouseY = -999;
-    let cardAberto = false;
+  let W, H;
+  let stars = [];
+  let specialStars = [];
+  let mouseX = -999, mouseY = -999;
+  let cardAberto = false;
+  let animFrame;
 
-    function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      init();
-    }
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    criarEstrelas();
+  }
 
-    // ─── INICIALIZA ESTRELAS ──────────────────────────────────
-    function init() {
-      stars        = [];
-      specialStars = [];
-      nebulas      = [];
+  function criarEstrelas() {
+    stars = [];
+    specialStars = [];
 
-      // Nebulosas de fundo
-      for (let i = 0; i < 5; i++) {
-        nebulas.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          r: 80 + Math.random() * 180,
-          cor: `hsla(\${260 + Math.random()*60}, 80%, 40%, 0.07)`
-        });
-      }
-
-      // Estrelas comuns
-      for (let i = 0; i < 280; i++) {
-        stars.push({
-          x:       Math.random() * W,
-          y:       Math.random() * H,
-          r:       0.3 + Math.random() * 1.6,
-          alpha:   0.4 + Math.random() * 0.6,
-          speed:   0.003 + Math.random() * 0.008,
-          phase:   Math.random() * Math.PI * 2,
-          cor:     `hsl(\${240 + Math.random()*80}, 80%, \${70 + Math.random()*30}%)`,
-        });
-      }
-
-      // Estrelas especiais (motivos)
-      const margin = 80;
-      for (let i = 0; i < motivos.length; i++) {
-        specialStars.push({
-          x:       margin + Math.random() * (W - margin * 2),
-          y:       margin + Math.random() * (H - margin * 2),
-          r:       5 + Math.random() * 4,
-          alpha:   1,
-          phase:   Math.random() * Math.PI * 2,
-          speed:   0.02 + Math.random() * 0.01,
-          motivo:  motivos[i],
-          hovered: false,
-          pulso:   0,
-        });
-      }
-    }
-
-    // ─── DRAW ─────────────────────────────────────────────────
-    function draw(t) {
-      ctx.clearRect(0, 0, W, H);
-
-      // Fundo gradiente galáxia
-      const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*0.8);
-      bg.addColorStop(0,   '#0d0221');
-      bg.addColorStop(0.5, '#0a0118');
-      bg.addColorStop(1,   '#000000');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, W, H);
-
-      // Nebulosas
-      nebulas.forEach(n => {
-        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-        g.addColorStop(0, n.cor);
-        g.addColorStop(1, 'transparent');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
-        ctx.fill();
+    // Estrelas comuns
+    for (let i = 0; i < 300; i++) {
+      stars.push({
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        r:     0.5 + Math.random() * 1.8,
+        alpha: 0.3 + Math.random() * 0.7,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.005 + Math.random() * 0.01,
       });
+    }
 
-      // Estrelas comuns
-      stars.forEach(s => {
-        const a = s.alpha * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fillStyle = s.cor.replace(')', `, \${a})`).replace('hsl', 'hsla');
-        ctx.fill();
+    // Estrelas especiais — distribuídas em grade para não se sobrepor
+    const cols = 3;
+    const rows = 2;
+    const cellW = W / cols;
+    const cellH = H / rows;
+    const margem = 60;
+
+    for (let i = 0; i < motivos.length; i++) {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      specialStars.push({
+        x:      margem + col * cellW + Math.random() * (cellW - margem * 2),
+        y:      margem + row * cellH + Math.random() * (cellH - margem * 2),
+        r:      8,
+        phase:  Math.random() * Math.PI * 2,
+        speed:  0.015 + Math.random() * 0.01,
+        motivo: motivos[i],
       });
+    }
+  }
 
-      // Estrelas especiais
-      let hoveredStar = null;
-      specialStars.forEach(s => {
-        const dist = Math.hypot(mouseX - s.x, mouseY - s.y);
-        s.hovered = dist < 28;
-        if (s.hovered) hoveredStar = s;
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
 
-        s.pulso = 0.7 + 0.3 * Math.sin(t * s.speed + s.phase);
-        const raio = s.hovered ? s.r * 1.6 : s.r * s.pulso;
+    // Fundo
+    const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H));
+    bg.addColorStop(0,   '#0d0221');
+    bg.addColorStop(0.6, '#080112');
+    bg.addColorStop(1,   '#000000');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
 
-        // Brilho externo
-        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, raio * 3.5);
-        glow.addColorStop(0,   s.hovered ? 'rgba(196,165,255,0.5)' : 'rgba(167,139,250,0.3)');
-        glow.addColorStop(1,   'transparent');
-        ctx.fillStyle = glow;
+    // Estrelas comuns
+    stars.forEach(s => {
+      const a = s.alpha * (0.5 + 0.5 * Math.sin(t * 0.001 * s.speed * 100 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 180, 255, \${a})`;
+      ctx.fill();
+    });
+
+    // Estrelas especiais
+    let hoveredStar = null;
+
+    specialStars.forEach(s => {
+      const dist = Math.hypot(mouseX - s.x, mouseY - s.y);
+      const hovered = dist < 35;
+      if (hovered) hoveredStar = s;
+
+      const pulso = 0.75 + 0.25 * Math.sin(t * 0.001 * s.speed * 100 + s.phase);
+      const raio  = hovered ? s.r * 1.8 : s.r * pulso;
+
+      // Brilho externo
+      const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, raio * 4);
+      glow.addColorStop(0,   hovered ? 'rgba(220,200,255,0.6)' : 'rgba(167,139,250,0.35)');
+      glow.addColorStop(0.5, hovered ? 'rgba(167,139,250,0.2)' : 'rgba(124,58,237,0.1)');
+      glow.addColorStop(1,   'transparent');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, raio * 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Núcleo branco
+      const core = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, raio);
+      core.addColorStop(0,   '#ffffff');
+      core.addColorStop(0.3, hovered ? '#ddd6fe' : '#c4b5fd');
+      core.addColorStop(1,   'transparent');
+      ctx.fillStyle = core;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, raio, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Raios (4 pontas)
+      ctx.save();
+      ctx.translate(s.x, s.y);
+      ctx.strokeStyle = hovered ? 'rgba(220,200,255,0.8)' : 'rgba(167,139,250,0.5)';
+      ctx.lineWidth   = hovered ? 2 : 1;
+      const len = raio * (hovered ? 4 : 3);
+      for (let a = 0; a < 4; a++) {
+        ctx.rotate(Math.PI / 4);
         ctx.beginPath();
-        ctx.arc(s.x, s.y, raio * 3.5, 0, Math.PI*2);
-        ctx.fill();
-
-        // Núcleo
-        const core = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, raio);
-        core.addColorStop(0, '#ffffff');
-        core.addColorStop(0.4, s.hovered ? '#c4b5fd' : '#a78bfa');
-        core.addColorStop(1, 'transparent');
-        ctx.fillStyle = core;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, raio, 0, Math.PI*2);
-        ctx.fill();
-
-        // Raios de luz (estrela de 4 pontas)
-        ctx.save();
-        ctx.translate(s.x, s.y);
-        ctx.strokeStyle = s.hovered ? 'rgba(196,165,255,0.7)' : 'rgba(167,139,250,0.4)';
-        ctx.lineWidth = s.hovered ? 1.5 : 0.8;
-        const len = raio * (s.hovered ? 3.5 : 2.5);
-        for (let a = 0; a < 4; a++) {
-          ctx.beginPath();
-          ctx.rotate(Math.PI / 4);
-          ctx.moveTo(0, -len);
-          ctx.lineTo(0, len);
-          ctx.stroke();
-        }
-        ctx.restore();
-      });
-
-      // Tooltip hover
-      if (hoveredStar && !cardAberto) {
-        tooltip.textContent = `\${hoveredStar.motivo.emoji}  \${hoveredStar.motivo.texto}`;
-        tooltip.classList.add('visible');
-
-        let tx = mouseX + 20, ty = mouseY - 20;
-        if (tx + 230 > W) tx = mouseX - 240;
-        if (ty < 10)       ty = mouseY + 20;
-        tooltip.style.left = tx + 'px';
-        tooltip.style.top  = ty + 'px';
-      } else {
-        tooltip.classList.remove('visible');
+        ctx.moveTo(0, -len);
+        ctx.lineTo(0,  len);
+        ctx.stroke();
       }
+      ctx.restore();
+    });
 
-      requestAnimationFrame(draw);
+    // Tooltip
+    if (hoveredStar && !cardAberto) {
+      tooltip.textContent = `\${hoveredStar.motivo.emoji}  \${hoveredStar.motivo.texto}`;
+      tooltip.classList.add('visible');
+      let tx = mouseX + 20, ty = mouseY - 20;
+      if (tx + 250 > W) tx = mouseX - 260;
+      if (ty < 10)       ty = mouseY + 25;
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top  = ty + 'px';
+    } else {
+      tooltip.classList.remove('visible');
     }
 
-    // ─── CARD AO CLICAR ───────────────────────────────────────
-    function abrirCard(s) {
-      cardTexto.textContent = s.motivo.texto;
-      cardEmoji.textContent = s.motivo.emoji;
-      card.classList.add('visible');
-      cardAberto = true;
-    }
+    animFrame = requestAnimationFrame(draw);
+  }
 
-    function fecharCard() {
-      card.classList.remove('visible');
-      cardAberto = false;
-    }
+  function abrirCard(s) {
+    cardTexto.textContent = s.motivo.texto;
+    cardEmoji.textContent = s.motivo.emoji;
+    overlay.classList.add('visible');
+    cardAberto = true;
+  }
 
-    // ─── EVENTOS ──────────────────────────────────────────────
-    canvas.addEventListener('mousemove', e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+  function fecharCard() {
+    overlay.classList.remove('visible');
+    cardAberto = false;
+  }
 
-    canvas.addEventListener('click', e => {
-      if (cardAberto) return;
-      const s = specialStars.find(s => Math.hypot(e.clientX - s.x, e.clientY - s.y) < 28);
-      if (s) abrirCard(s);
-    });
+  // Eventos mouse
+  canvas.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
 
-    // Suporte touch (mobile)
-    canvas.addEventListener('touchmove', e => {
-      e.preventDefault();
-      mouseX = e.touches[0].clientX;
-      mouseY = e.touches[0].clientY;
-    }, { passive: false });
+  canvas.addEventListener('mouseleave', () => {
+    mouseX = -999;
+    mouseY = -999;
+  });
 
-    canvas.addEventListener('touchend', e => {
-      if (cardAberto) return;
-      const tx = e.changedTouches[0].clientX;
-      const ty = e.changedTouches[0].clientY;
-      const s = specialStars.find(s => Math.hypot(tx - s.x, ty - s.y) < 36);
-      if (s) abrirCard(s);
-    });
+  canvas.addEventListener('click', e => {
+    if (cardAberto) return;
+    const s = specialStars.find(s => Math.hypot(e.clientX - s.x, e.clientY - s.y) < 35);
+    if (s) abrirCard(s);
+  });
 
-    // ─── INTRO ────────────────────────────────────────────────
-    document.getElementById('btn-entrar').addEventListener('click', () => {
-      const intro = document.getElementById('intro');
-      intro.style.opacity = '0';
-      setTimeout(() => intro.style.display = 'none', 1500);
-    });
+  // Eventos touch
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    mouseX = e.touches[0].clientX;
+    mouseY = e.touches[0].clientY;
+  }, { passive: false });
 
-    // ─── START ────────────────────────────────────────────────
-    window.addEventListener('resize', resize);
-    resize();
-    requestAnimationFrame(draw);
-  </script>
+  canvas.addEventListener('touchend', e => {
+    const tx = e.changedTouches[0].clientX;
+    const ty = e.changedTouches[0].clientY;
+    mouseX = -999; mouseY = -999;
+    if (cardAberto) return;
+    const s = specialStars.find(s => Math.hypot(tx - s.x, ty - s.y) < 45);
+    if (s) abrirCard(s);
+  });
+
+  // Botão intro
+  document.getElementById('btn-entrar').addEventListener('click', () => {
+    const intro = document.getElementById('intro');
+    intro.style.transition = 'opacity 1.2s ease';
+    intro.style.opacity = '0';
+    setTimeout(() => intro.style.display = 'none', 1200);
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(draw);
+</script>
 </body>
 </html>
